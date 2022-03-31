@@ -1,0 +1,151 @@
+<Subscription xmlns="http://schemas.microsoft.com/2006/03/windows/events/subscription">
+  <SubscriptionId>Cyberwise Default WEF Subscription</SubscriptionId>
+  <SubscriptionType>SourceInitiated</SubscriptionType>
+  <Description>Events pertaining to account changes. Passwords, groups, status, etc.</Description>
+  <Enabled>true</Enabled>
+  <Uri>http://schemas.microsoft.com/wbem/wsman/1/windows/EventLog</Uri>
+  <ConfigurationMode>Custom</ConfigurationMode>
+  <Delivery Mode="Push">
+    <Batching>
+      <MaxItems>1</MaxItems>
+      <MaxLatencyTime>300000</MaxLatencyTime>
+    </Batching>
+    <PushSettings>
+      <Heartbeat Interval="1800000"/>
+    </PushSettings>
+  </Delivery>
+  <Query><![CDATA[
+<QueryList>
+      <Query Id="0" Path="Security">
+        <!-- 4627: Group Membership Information -->
+        <Select Path="Security">*[System[(EventID=4627) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4703: A user right was adjusted. -->
+        <!-- 4704: A user right (privilege) was assigned. -->
+        <!-- 4704: A user right (privilege) was removed. -->
+        <Select Path="Security">*[System[(EventID=4703 or EventID=4704 or EventID=4705) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4720: A user account was created. -->
+        <Select Path="Security">*[System[(EventID=4720) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4722: A user account was enabled. -->
+        <!-- 4723: Attempt was made to change account's password. -->
+        <!-- 4724: An attempt was made to reset an account's password. -->
+        <!-- 4725: A user account was disabled. -->
+        <!-- 4726: A user account was deleted. -->
+        <!-- 4727: A security-enabled global group was created. -->
+        <!-- 4728: A member was added to a security-enabled global group. -->
+        <!-- 4729: A member was removed to a security-enabled global group. -->
+        <!-- 4730: A security-enabled global group was deleted. -->
+        <!-- 4731: A security-enabled local group was created. -->
+        <!-- 4732: A member was added to a security-enabled local group. -->
+        <!-- 4733: A member was removed from a security-enabled local group. -->
+        <!-- 4734: A security-enabled local group was deleted. -->
+        <!-- 4735: Modification of Security-enabled groups -->
+        <!-- 4737: A security-enabled global group was changed. -->
+        <!-- 4738: A user account was changed. -->
+        <!-- 4739: Domain Policy was changed. -->
+        <!-- 4741: A computer account was created. -->
+        <!-- 4742: A computer account was changed. -->
+        <!-- 4743: A computer account was deleted. -->
+        <!-- 4744: A security-disabled local group was created. -->
+        <!-- 4745: A security-disabled local group was changed. -->
+        <!-- 4746: A member was added to a security-disabled local group. -->
+        <!-- 4747: A member was removed from a security-disabled local group. -->
+        <!-- 4748: A security-disabled local group was deleted. -->
+        <!-- 4749: A security-disabled global group was created. -->
+        <!-- 4750: A security-disabled global group was changed. -->
+        <!-- 4751: A member was added to a security-disabled global group. -->
+        <!-- 4752: A member was removed from a security-disabled global group. -->
+        <!-- 4753: A security-disabled global group was deleted. -->
+        <!-- 4754: A security-enabled universal group was created. -->
+        <!-- 4755: A security-enabled universal group was changed. -->
+        <!-- 4756: A security-enabled universal group was changed. -->
+        <!-- 4757: A security-enabled universal group was changed. -->
+        <!-- 4758: A security-enabled universal group was created. -->
+        <!-- 4759: A security-disabled universal group was created. -->
+        <!-- 4760: A security-disabled universal group was changed. -->
+        <!-- 4761: A member was added to a security-disabled universal group. -->
+        <!-- 4762: A member was removed from a security-disabled universal group. -->
+        <!-- 4763: A security-disabled universal group was deleted. -->
+        <!-- 4764: A group's type was changed. -->
+        <!-- 4765: SID History was added to an account. -->
+        <!-- 4766: An attempt to add SID History to an account failed. -->
+        <!-- 4767: A user account was unlocked. -->
+        <Select Path="Security">*[System[(EventID &gt;=4722 and EventID &lt;=4735) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4737 and EventID &lt;=4739) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4741 and EventID &lt;=4767) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4780: The ACL was set on accounts which are members of administrators group. -->
+        <!-- 4781: The name of an account was changed. -->
+        <!-- 4782: The password hash an account was accessed. -->
+        <Select Path="Security">*[System[(EventID &gt;=4780 and EventID &lt;=4782) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4793: The Password Policy Checking API was called. -->
+        <!-- 4794: An attempt was made to set the Directory Services Restore Mode administrator password. -->
+        <Select Path="Security">*[System[(EventID=4793 or EventID=4794) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4798: A user's local group membership was enumerated. -->
+        <!-- 4799: A security-enabled local group membership was enumerated. -->
+        <Select Path="Security">*[System[(EventID=4798 or EventID=4799) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 5376: Credential Manager credentials were backed up. -->
+        <!-- 5377: Credential Manager credentials were restored from a backup. -->
+        <Select Path="Security">*[System[(EventID=5376 or EventID=5377) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 1102: Security Log File Cleared -->
+        <Select Path="Security">*[System[Provider[@Name='Microsoft-Windows-Eventlog'] and Level=4 and EventID=1102 and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4698: A scheduled task was created -->
+        <!-- 4699: A scheduled task was deleted -->
+        <!-- 4700: A scheduled task was enabled -->
+        <!-- 4701: A scheduled task was disabled -->
+        <!-- 4702: A scheduled task was updated -->
+        <Select Path="Security">*[System[(EventID &gt;=4698 and EventID &lt;=4702) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- Service Control Manager Failures and Crashes -->
+        <!-- 7022: The service hung on starting -->
+        <!-- 7023: The service terminated with the following error -->
+        <!-- 7023: The service terminated with the following error -->
+        <!-- 7024: The service terminated with service-specific error -->
+        <!-- 7026: The following boot-start or system-start driver(s) failed to load -->
+        <!-- 7031: The service terminated unexpectedly. It has done this x time(s). The following corrective action will be taken in y milliseconds -->
+        <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7022 or EventID=7023 or EventID=7024 or EventID=7026 or EventID=7031 or EventID=7032 or EventID=7034)  and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 7040: Service Start Type Changed -->
+        <!-- 7045: Service Installed -->
+        <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7045 or EventID=7040) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+         <!-- 4616: System Time Changed  -->
+        <Select Path="Security">*[System[(EventID=4616) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4624: An account was successfully logged on. -->
+        <!-- 4625: An account failed to log on. -->
+        <!-- 4626: User/Device claims information. -->
+        <Select Path="Security">*[System[(EventID &gt;=4624 and EventID &lt;=4626) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4634: An account was successfully logged off. -->
+        <!-- 4647: User initiated logoff. -->
+        <!-- 4649: A replay attack was detected. -->
+        <!-- 4672: Special privileges assigned to a new logon, administrative logins -sa, -ada, etc. -->
+        <!-- 4675: SIDs were filtered. -->
+        <Select Path="Security">*[System[(EventID=4634 or EventID=4647 or EventID=4649 or EventID=4672 or EventID=4675 ) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4774: An account was mapped for logon. -->
+        <!-- 4775: An account could not be mapped for logon. -->
+        <!-- 4776: The computer attempted to validate the credentials for an account. -->
+        <!-- 4777: The domain controller failed to validate the credentials for an account. -->
+        <!-- 4778: A session was reconnected to a Window Station. -->
+        <!-- 4779: A session was disconnected from a Window Station. -->
+        <Select Path="Security">*[System[(EventID &gt;=4774 and EventID &lt;=4779) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4800 The workstation was locked. -->
+        <!-- 4801 The workstation was unlocked. -->
+        <!-- 4802 The screen saver was invoked. -->
+        <!-- 4803 The screen saver was dismissed. -->
+        <Select Path="Security">*[System[(EventID &gt;=4800 and EventID &lt;=4803) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4964: Special groups have been assigned a new logon. -->
+        <Select Path="Security">*[System[(EventID=4964) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 5378 The requested credentials delegation was disallowed by policy. -->
+        <Select Path="Security">*[System[(EventID=5378) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- Command line auditing is disabled by default. Enable it via https://goo.gl/Gua8oj -->
+        <!-- 4688: Process Created -->
+        <Select Path="Security">*[System[(EventID=4688) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- 4699: Process Terminated -->
+        <Select Path="Security">*[System[(EventID=4689) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- Suppress SECURITY_LOCAL_SYSTEM_RID A special account used by the OS, noisy -->
+        <Suppress Path="Security">*[EventData[Data[1]="S-1-5-18"]]</Suppress>
+        <!-- MSSQL Server Events -->
+        <Select Path="Application">*[System[Provider[@Name='MSSQLSERVER'] and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    </QueryList>
+  <ReadExistingEvents>true</ReadExistingEvents>
+  <TransportName>http</TransportName>
+  <ContentFormat>RenderedText</ContentFormat>
+  <Locale Language="en-US"/>
+  <AllowedSourceNonDomainComputers/>
+  <AllowedSourceDomainComputers>O:NSG:NSD:(A;;GA;;;DC)(A;;GA;;;NS)(A;;GA;;;DD)</AllowedSourceDomainComputers>
+</Subscription>
