@@ -1,20 +1,4 @@
-<Subscription xmlns="http://schemas.microsoft.com/2006/03/windows/events/subscription">
-  <SubscriptionId>Cyberwise Default WEF Subscription</SubscriptionId>
-  <SubscriptionType>SourceInitiated</SubscriptionType>
-  <Description>Events pertaining to account changes. Passwords, groups, status, etc.</Description>
-  <Enabled>true</Enabled>
-  <Uri>http://schemas.microsoft.com/wbem/wsman/1/windows/EventLog</Uri>
-  <ConfigurationMode>Custom</ConfigurationMode>
-  <Delivery Mode="Push">
-    <Batching>
-      <MaxItems>1</MaxItems>
-      <MaxLatencyTime>300000</MaxLatencyTime>
-    </Batching>
-    <PushSettings>
-      <Heartbeat Interval="1800000"/>
-    </PushSettings>
-  </Delivery>
-  <Query><![CDATA[
+<Query><![CDATA[
 <QueryList>
       <Query Id="0" Path="Security">
         <!-- 4627: Group Membership Information -->
@@ -142,8 +126,6 @@
         <!-- MSSQL Server Events -->
         <Select Path="Application">*[System[Provider[@Name='MSSQLSERVER'] and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
     </QueryList>
-  <ReadExistingEvents>true</ReadExistingEvents>
-  <TransportName>http</TransportName>
   <ContentFormat>RenderedText</ContentFormat>
   <Locale Language="en-US"/>
   <AllowedSourceNonDomainComputers/>
