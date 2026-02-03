@@ -1,0 +1,8 @@
+<QueryList>
+  <!-- DHCP Server Operational channel - Applications and Services Logs -->
+  <!-- Path: Microsoft-Windows-DHCP-Server/Operational -->
+  <!-- Event IDs: 70-166 (IPv4 scope/reservation), 130-166 (IPv6), 20220-20316 (policies, failover); see Microsoft DHCP Server Operational Events docs -->
+  <Query Id="0" Path="Microsoft-Windows-DHCP-Server/Operational">
+    <Select Path="Microsoft-Windows-DHCP-Server/Operational">*[System[TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+  </Query>
+</QueryList>

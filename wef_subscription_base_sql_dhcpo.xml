@@ -1,0 +1,34 @@
+<QueryList>
+      <Query Id="0" Path="Security">
+        <!-- Base: Security + System -->
+        <!-- 4627: Group Membership Information -->
+        <Select Path="Security">*[System[(EventID=4627) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4703 or EventID=4704 or EventID=4705) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4720) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4722 and EventID &lt;=4735) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4737 and EventID &lt;=4739) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4741 and EventID &lt;=4767) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4780 and EventID &lt;=4782) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4793 or EventID=4794) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4798 or EventID=4799) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=5376 or EventID=5377) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[Provider[@Name='Microsoft-Windows-Eventlog'] and Level=4 and EventID=1102 and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4698 and EventID &lt;=4702) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7022 or EventID=7023 or EventID=7024 or EventID=7026 or EventID=7031 or EventID=7032 or EventID=7034)  and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7045 or EventID=7040) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4616) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4624 and EventID &lt;=4626) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4634 or EventID=4647 or EventID=4649 or EventID=4672 or EventID=4675 ) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4774 and EventID &lt;=4779) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID &gt;=4800 and EventID &lt;=4803) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4964) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=5378) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4688) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Select Path="Security">*[System[(EventID=4689) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <Suppress Path="Security">*[EventData[Data[1]="S-1-5-18"]]</Suppress>
+        <!-- SQL: MSSQL Server Events -->
+        <Select Path="Application">*[System[Provider[@Name='MSSQLSERVER'] and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        <!-- DHCP Operational: Microsoft-Windows-DHCP-Server/Operational -->
+        <Select Path="Microsoft-Windows-DHCP-Server/Operational">*[System[TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+        </Query>
+    </QueryList>

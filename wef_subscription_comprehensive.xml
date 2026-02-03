@@ -1,0 +1,121 @@
+<QueryList>
+  <!-- ========================================================================
+       WEF SUBSCRIPTION - GENİŞ KAPSAMLI 
+       Zaman penceresi: son 24 saat (86400000 ms)
+       İçerik: Security, System, Application (MSSQL), DHCP, Kerberos, NTLM,
+               PowerShell, Defender, Firewall, RDP, WMI
+       ======================================================================== -->
+  <Query Id="0" Path="Security">
+
+    <!-- ========== SECURITY: HESAP VE GRUP YÖNETİMİ ========== -->
+    <!-- 4627: Logon sırasında grup üyelik bilgisi (kim hangi gruplarda) -->
+    <Select Path="Security">*[System[(EventID=4627) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4703/4704/4705: Kullanıcı hakkı ayarlandı/atandı/kaldırıldı (privilege escalation riski) -->
+    <Select Path="Security">*[System[(EventID=4703 or EventID=4704 or EventID=4705) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4720: Yeni kullanıcı hesabı oluşturuldu -->
+    <Select Path="Security">*[System[(EventID=4720) and TimeCreated[timediff(@SystemTime) &lt;= 86400001]]]</Select>
+    <!-- 4722-4735: Hesap etkinleştirme, şifre değişimi/sıfırlama, devre dışı/silme, güvenlik grupları oluşturma/değişiklik/silme, üye ekleme/çıkarma -->
+    <Select Path="Security">*[System[(EventID &gt;=4722 and EventID &lt;=4735) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4737-4739: Global group değişikliği, kullanıcı hesabı değişikliği, domain policy değişikliği -->
+    <Select Path="Security">*[System[(EventID &gt;=4737 and EventID &lt;=4739) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4741-4767: Bilgisayar hesabı, güvenlik-disabled/universal gruplar, SID History, hesap kilidi açma -->
+    <Select Path="Security">*[System[(EventID &gt;=4741 and EventID &lt;=4767) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4740: Hesap kilitlendi - brute force / parola saldırısı tespiti (siber güvenlik eklemesi) -->
+    <Select Path="Security">*[System[(EventID=4740) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4780-4782: Admin grubu üyelerinde ACL, hesap adı değişikliği, parola hash erişimi -->
+    <Select Path="Security">*[System[(EventID &gt;=4780 and EventID &lt;=4782) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4793/4794: Password Policy API, DSRM admin parolası denemesi -->
+    <Select Path="Security">*[System[(EventID=4793 or EventID=4794) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4798/4799: Yerel grup üyelikleri listelendi (recon) -->
+    <Select Path="Security">*[System[(EventID=4798 or EventID=4799) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SECURITY: KERBEROS ( golden/silver ticket, brute force) ========== -->
+    <!-- 4768: Kerberos TGT istendi - Golden Ticket, Pass-the-Ticket tespiti -->
+    <Select Path="Security">*[System[(EventID=4768) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4769: Kerberos servis bileti istendi/verildi - Silver Ticket, lateral movement -->
+    <Select Path="Security">*[System[(EventID=4769) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4770: Kerberos bileti yenilendi - uzun süreli oturum, persistence -->
+    <Select Path="Security">*[System[(EventID=4770) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4771: Kerberos pre-authentication başarısız - parola brute force tespiti -->
+    <Select Path="Security">*[System[(EventID=4771) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SECURITY: NTLM (siber güvenlik - Pass-the-Hash, NTLM relay) ========== -->
+    <!-- 4776: DC NTLM kimlik doğrulaması yaptı - legacy auth, credential abuse izleme -->
+    <Select Path="Security">*[System[(EventID=4776) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SECURITY: CREDENTIAL MANAGER, LOG TEMİZLEME, SCHEDULED TASK ========== -->
+    <!-- 5376/5377: Credential Manager yedeklendi/geri yüklendi -->
+    <Select Path="Security">*[System[(EventID=5376 or EventID=5377) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 1102: Security log dosyası temizlendi (log silme - tespit gizleme girişimi) -->
+    <Select Path="Security">*[System[Provider[@Name='Microsoft-Windows-Eventlog'] and Level=4 and EventID=1102 and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4698-4702: Zamanlanmış görev oluşturuldu/silindi/etkinleştirildi/devre dışı/güncellendi (persistence) -->
+    <Select Path="Security">*[System[(EventID &gt;=4698 and EventID &lt;=4702) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SYSTEM: SERVICE CONTROL MANAGER ========== -->
+    <!-- 7022-7034: Servis hata/crash (takıldı, sonlandı, sürücü yüklenemedi, beklenmedik sonlanma) -->
+    <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7022 or EventID=7023 or EventID=7024 or EventID=7026 or EventID=7031 or EventID=7032 or EventID=7034)  and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 7040/7045: Servis başlangıç türü değişti, yeni servis yüklendi (persistence) -->
+    <Select Path="System">*[System[Provider[@Name='Service Control Manager'] and (Level=1 or Level=2 or Level=3 or Level=4 or Level=0) and (EventID=7045 or EventID=7040) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SECURITY: LOGON, LOGOFF, ZAMAN, OTURUM ========== -->
+    <!-- 4616: Sistem saati değiştirildi (timestomping riski) -->
+    <Select Path="Security">*[System[(EventID=4616) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4624-4626: Başarılı/başarısız oturum açma, User/Device claims -->
+    <Select Path="Security">*[System[(EventID &gt;=4624 and EventID &lt;=4626) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4634/4647/4649/4672/4675: Oturum kapatma, logoff, replay saldırısı, özel ayrıcalık ataması, SID filtreleme -->
+    <Select Path="Security">*[System[(EventID=4634 or EventID=4647 or EventID=4649 or EventID=4672 or EventID=4675 ) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4774-4779: Hesap logon eşlemesi, credential doğrulama, oturum yeniden bağlanma/ayrılma -->
+    <Select Path="Security">*[System[(EventID &gt;=4774 and EventID &lt;=4779) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4800-4803: İş istasyonu kilitlendi/açıldı, ekran koruyucu -->
+    <Select Path="Security">*[System[(EventID &gt;=4800 and EventID &lt;=4803) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4964: Özel gruplar yeni logon atandı -->
+    <Select Path="Security">*[System[(EventID=4964) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 5378: Credentials delegation policy tarafından reddedildi -->
+    <Select Path="Security">*[System[(EventID=5378) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== SECURITY: PROCESS (4688/4689) ========== -->
+    <!-- 4688: Process oluşturuldu - command line GPO ile etkinleştirilebilir -->
+    <Select Path="Security">*[System[(EventID=4688) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4689: Process sonlandı -->
+    <Select Path="Security">*[System[(EventID=4689) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- Suppress: LOCAL SYSTEM (S-1-5-18) event'leri - gürültü azaltma -->
+    <Suppress Path="Security">*[EventData[Data[1]="S-1-5-18"]]</Suppress>
+
+    <!-- ========== APPLICATION: MSSQL SERVER ========== -->
+    <!-- SQL Server Application log - tüm MSSQLSERVER provider event'leri -->
+    <Select Path="Application">*[System[Provider[@Name='MSSQLSERVER'] and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== DHCP SERVER OPERATIONAL ========== -->
+    <!-- Scope/reservation/failover/policy değişiklikleri - ağ yönetimi ve yetkisiz değişiklik tespiti -->
+    <Select Path="Microsoft-Windows-DHCP-Server/Operational">*[System[TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== POWERSHELL (siber güvenlik - script block, living-off-the-land) ========== -->
+    <!-- GPO: PowerShell Script Block Logging / Module Logging etkinleştirilmeli. Yüksek hacim üretebilir. -->
+    <!-- 4103: Module logging - çalıştırılan komutlar -->
+    <Select Path="Microsoft-Windows-PowerShell/Operational">*[System[(EventID=4103) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 4104: Script Block Logging - çalıştırılan script blokları, encoded komut tespiti -->
+    <Select Path="Microsoft-Windows-PowerShell/Operational">*[System[(EventID=4104) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== WINDOWS DEFENDER / MICROSOFT DEFENDER ( EDR/SIEM ilişkilendirme) ========== -->
+    <!-- 1116/1117: Kötü amaçlı yazılım tespit edildi / eylem alındı -->
+    <Select Path="Microsoft-Windows-Windows Defender/Operational">*[System[(EventID=1116 or EventID=1117) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 1119: Tespit (detection) - dosya, kullanıcı, zaman -->
+    <Select Path="Microsoft-Windows-Windows Defender/Operational">*[System[(EventID=1119) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 1120: Kötü amaçlı yazılım temizlendi / karantinaya alındı -->
+    <Select Path="Microsoft-Windows-Windows Defender/Operational">*[System[(EventID=1120) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== RDP / TERMINAL SERVICES (uzak oturum izleme) ========== -->
+    <!-- 21: Uzak masaüstü oturumu başarıyla başlatıldı -->
+    <Select Path="Microsoft-Windows-TerminalServices-LocalSessionManager/Operational">*[System[(EventID=21) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 22: Oturum girişi (shell start) -->
+    <Select Path="Microsoft-Windows-TerminalServices-LocalSessionManager/Operational">*[System[(EventID=22) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+    <!-- 25: Oturum yeniden bağlandı - session hijack / persistence riski -->
+    <Select Path="Microsoft-Windows-TerminalServices-LocalSessionManager/Operational">*[System[(EventID=25) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+    <!-- ========== WMI ACTIVITY (lateral movement, persistence) ========== -->
+    <!-- 5858: WMI aktivitesi - WMI event subscription, script tabanlı saldırılar -->
+    <Select Path="Microsoft-Windows-WMI-Activity/Operational">*[System[(EventID=5858) and TimeCreated[timediff(@SystemTime) &lt;= 86400000]]]</Select>
+
+  </Query>
+</QueryList>
